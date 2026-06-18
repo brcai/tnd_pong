@@ -4,19 +4,11 @@ import pygame
 import random
 import sys
 import torch
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d.art3d import Line3DCollection
-from sklearn.decomposition import PCA
-from mpl_toolkits.mplot3d import Axes3D
 from torch.utils.data import DataLoader, TensorDataset
-from sklearn.manifold import TSNE
 from sklearn.preprocessing import StandardScaler
 import torch.nn as nn
 import torch.optim as optim
 import random
-from sklearn.metrics.pairwise import rbf_kernel
-from scipy.linalg import sqrtm
-from scipy.spatial.distance import cdist
 
 
 
@@ -65,7 +57,6 @@ def accuracy_test(model, is_transformer=False, seq_len=40):
     succ_all = 0
     fail_all = 0
     best_catch = 0
-    fail_loc = []
     print("start testing!!!")
     device = model.device
     all_cnt = 0
@@ -181,8 +172,7 @@ def accuracy_test(model, is_transformer=False, seq_len=40):
                 if ball.bottom >= SCREEN_HEIGHT:
                     fail += 1
                     if trail > tmp_best_catch: tmp_best_catch = trail
-                    fail_loc.append(abs(ball.x-paddle.x))
-                    print("Game Over! Succeeded for ", trail, " times", "fail_loc: ", abs(ball.x-paddle.x))
+                    print("Game Over! Succeeded for ", trail, " times")
                     trail = 0
                     ball = pygame.Rect(random.choice([i*10 for i in range(3,17)]), random.choice([i*10 for i in range(3,25)]), BALL_SIZE, BALL_SIZE)
                     ball_dx = BALL_SPEED_X
@@ -221,4 +211,4 @@ def accuracy_test(model, is_transformer=False, seq_len=40):
             if tmp_best_catch > best_catch: best_catch = tmp_best_catch
             print("success | fail times: ", succ, "|", fail, " has cycle: ", detect_paddle_cycle_final(V)["is_cycle"])
 
-    return succ_all, fail_all, best_catch, np.mean(fail_loc)
+    return succ_all, fail_all, best_catch
